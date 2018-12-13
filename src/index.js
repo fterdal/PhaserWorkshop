@@ -1,3 +1,4 @@
+/* global Phaser */
 /** @type {import("../typings/phaser")} */
 /* The above loads the phaser.d.ts file so that VSCode has autocomplete for the Phaser API.
 If you experience problems with autocomplete, try opening the phaser.d.ts file and scrolling up and down in it.
@@ -15,6 +16,9 @@ But this hasn't happened yet!
 // Bring in all the scenes
 import 'phaser';
 import config from './config/config'
+import BgScene from './scenes/BgScene'
+import FgScene from './scenes/FgScene'
+import MainScene from './scenes/MainScene'
 
 class Game extends Phaser.Game {
   constructor() {
@@ -23,9 +27,13 @@ class Game extends Phaser.Game {
 
     // Add all the scenes
     // << ADD ALL SCENES HERE >>
+    this.scene.add('BgScene', BgScene)
+    this.scene.add('FgScene', FgScene)
+    this.scene.add('MainScene', MainScene)
 
     // Start the game with the mainscene
     // << START GAME WITH MAIN SCENE HERE >>
+    this.scene.start('MainScene')
   }
 }
 // Create new instance of game

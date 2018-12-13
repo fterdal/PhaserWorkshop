@@ -1,4 +1,4 @@
-
+/* global Phaser */
 export default class FgScene extends Phaser.Scene {
   constructor() {
     super('FgScene');
