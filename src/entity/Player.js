@@ -1,3 +1,4 @@
+/* global Phaser */
 import 'phaser';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
@@ -5,6 +6,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     super(scene, x, y, spriteKey);
 
     // << INITIALIZE PLAYER ATTRIBUTES HERE >>
+    this.scene = scene;
+    this.scene.add.existing(this);
   }
 
   // Check which controller button is being pushed and execute movement & animation
