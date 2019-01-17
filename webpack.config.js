@@ -6,6 +6,7 @@ const path = require('path');
 module.exports = {
 
     entry: './src/index.js',
+    mode: 'development',
 
     // devServer: {
     //   contentBase: './public',
@@ -22,15 +23,16 @@ module.exports = {
         rules: [
           {
             test: [ /\.vert$/, /\.frag$/ ],
-            use: 'raw-loader'
+            exclude: /node_modules/,
+            use: 'raw-loader',
           }
         ]
     },
 
     plugins: [
         new webpack.DefinePlugin({
-            'CANVAS_RENDERER': JSON.stringify(true),
-            'WEBGL_RENDERER': JSON.stringify(true)
+            CANVAS_RENDERER: JSON.stringify(true),
+            WEBGL_RENDERER: JSON.stringify(true)
         })
     ]
 
