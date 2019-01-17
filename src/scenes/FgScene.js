@@ -23,7 +23,16 @@ export default class FgScene extends Phaser.Scene {
 
     // Josh. The player. Our sprite is a little large, so we'll scale it down
     this.player = new Player(this, 20, 400, 'josh').setScale(0.25);
+    this.physics.add.collider(this.player, this.groundGroup);
+    // Assign the cursors
+    this.cursors = this.input.keyboard.createCursorKeys();
+    console.log(this.cursors);
+  }
 
+  // time: total time elapsed (ms)
+  // delta: time elapsed (ms) since last update() call. 16.666 ms @ 60fps
+  update(time, delta) {
+    this.player.update(this.cursors);
   }
 
   // Make the ground
