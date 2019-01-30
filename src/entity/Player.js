@@ -9,6 +9,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene = scene;
     this.scene.add.existing(this);
     this.scene.physics.world.enable(this);
+    this.facingLeft = false;
   }
 
   // Check which controller button is being pushed and execute movement & animation
@@ -16,16 +17,29 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // << INSERT CODE HERE >>
     this.updateMovement(cursors);
     this.updateJump(cursors);
+    this.updateInAir()
   }
 
   updateMovement(cursors) {
     // Move left
     if (cursors.left.isDown) {
+      if (!this.facingLeft) {
+        this.flipX = !this.flipX;
+        this.facingLeft = true;
+      }
       this.setVelocityX(-360);
+      if (this.body.touching.down) {
+        this.play('run', true);
+      }
     }
     // Move right
     else if (cursors.right.isDown) {
+      if (this.facingLeft) {
+        this.flipX = !this.flipX;
+        this.facingLeft = false;
+      }
       this.setVelocityX(360);
+
       if (this.body.touching.down) {
         this.play('run', true);
       }
@@ -33,12 +47,42 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // Neutral (no movement)
     else {
       this.setVelocityX(0);
+      this.play('idleUnarmed');
     }
   }
+
+  // updateMovement(cursors) {
+  //   // Move left
+  //   if (cursors.left.isDown) {
+  //     this.setVelocityX(-360);
+  //     if (this.body.touching.down) {
+  //       this.play('run', true);
+  //     }
+  //   }
+  //   // Move right
+  //   else if (cursors.right.isDown) {
+  //     this.setVelocityX(360);
+  //     if (this.body.touching.down) {
+  //       this.play('run', true);
+  //     }
+  //   }
+  //   // Neutral (no movement)
+  //   else {
+  //     this.setVelocityX(0);
+  //   }
+  // }
+
 
   updateJump(cursors) {
     if (cursors.up.isDown && this.body.touching.down) {
       this.setVelocityY(-800);
+    }
+  }
+
+  updateInAir() {
+    if (!this.body.touching.down) {
+      console.log('JUMPING')
+      this.play('jump');
     }
   }
 }
