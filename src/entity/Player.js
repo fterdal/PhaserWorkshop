@@ -81,7 +81,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
   updateInAir() {
     if (!this.body.touching.down) {
-      console.log('JUMPING')
       this.play('jump');
     }
   }
