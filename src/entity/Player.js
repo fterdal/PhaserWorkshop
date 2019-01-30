@@ -26,6 +26,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // Move right
     else if (cursors.right.isDown) {
       this.setVelocityX(360);
+      if (this.body.touching.down) {
+        this.play('run', true);
+      }
     }
     // Neutral (no movement)
     else {

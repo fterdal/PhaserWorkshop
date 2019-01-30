@@ -26,7 +26,9 @@ export default class FgScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.groundGroup);
     // Assign the cursors
     this.cursors = this.input.keyboard.createCursorKeys();
-    console.log(this.cursors);
+
+    // Create player's animations
+    this.createAnimations();
   }
 
   // time: total time elapsed (ms)
@@ -46,6 +48,14 @@ export default class FgScene extends Phaser.Scene {
     //add ground to group
     this.createGround(160, 540);
     this.createGround(600, 540);
+  }
+  createAnimations() {
+    this.anims.create({
+      key: 'run',
+      frames: this.anims.generateFrameNumbers('josh', { start: 17, end: 20 }),
+      frameRate: 10,
+      repeat: -1,
+    });
   }
 
 }
