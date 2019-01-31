@@ -1,6 +1,7 @@
 /* global Phaser */
 import Player from '../entity/Player';
 import Enemy from '../entity/Enemy';
+import Gun from '../entity/Gun';
 import Ground from '../entity/Ground';
 
 export default class FgScene extends Phaser.Scene {
@@ -16,6 +17,7 @@ export default class FgScene extends Phaser.Scene {
       frameHeight: 460,
     });
     this.load.image('brandon', 'assets/sprites/brandon.png');
+    this.load.image('gun', 'assets/sprites/gun.png');
   }
 
   create() {
@@ -25,8 +27,17 @@ export default class FgScene extends Phaser.Scene {
     // Josh. The player. Our sprite is a little large, so we'll scale it down
     this.player = new Player(this, 20, 400, 'josh').setScale(0.25);
     this.enemy = new Enemy(this, 600, 400, 'brandon').setScale(0.25);
-    this.physics.add.collider([this.player, this.enemy], this.groundGroup);
-    this.physics.add.collider(this.player, this.enemy);
+    this.gun = new Gun(this, 200, 400, 'gun').setScale(0.25);
+    this.physics.add.collider([
+      this.player,
+      this.enemy,
+      this.gun,
+    ], this.groundGroup);
+    this.physics.add.collider([
+      this.enemy,
+      this.gun,
+    ], this.player);
+
     // Assign the cursors
     this.cursors = this.input.keyboard.createCursorKeys();
 
