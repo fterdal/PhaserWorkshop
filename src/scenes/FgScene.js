@@ -23,6 +23,9 @@ export default class FgScene extends Phaser.Scene {
     this.load.image('brandon', 'assets/sprites/brandon.png');
     this.load.image('gun', 'assets/sprites/gun.png');
     this.load.image('laserBolt', 'assets/sprites/laserBolt.png');
+
+    // Sounds
+    this.load.audio('jump', 'assets/audio/jump.wav');
   }
 
   create() {
@@ -71,6 +74,9 @@ export default class FgScene extends Phaser.Scene {
     // Assign the cursors
     this.cursors = this.input.keyboard.createCursorKeys();
 
+    // Create sounds
+    this.jumpSound = this.sound.add('jump');
+
     // Create player's animations
     this.createAnimations();
 
@@ -90,7 +96,7 @@ export default class FgScene extends Phaser.Scene {
   // time: total time elapsed (ms)
   // delta: time elapsed (ms) since last update() call. 16.666 ms @ 60fps
   update(time, delta) {
-    this.player.update(this.cursors);
+    this.player.update(this.cursors, this.jumpSound); // Add a parameter for the jumpSound
     this.gun.update(
       time,
       this.player,
