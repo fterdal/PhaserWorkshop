@@ -1,5 +1,6 @@
 /* global Phaser */
 import 'phaser';
+import Laser from '../entity/Laser';
 
 export default class Gun extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, spriteKey) {
@@ -7,8 +8,21 @@ export default class Gun extends Phaser.Physics.Arcade.Sprite {
     this.scene = scene;
     this.scene.add.existing(this);
     this.scene.physics.world.enable(this);
+
+    // Set the firing delay (ms)
+    this.fireDelay = 100;
+    // Keep track of when the gun was last fired
+    this.lastFired = 0;
   }
 
-  update() {}
+  // Check if the shoot button is pressed and how long its been since we last fired
+  update(time, player, cursors, fireLaserFn) {
+    if (cursors.space.isDown && time > this.lastFired) {
+      if (player.armed) {
+        fireLaserFn();    // We'll implement this function in FgScene
+        this.lastFired = time + this.fireDelay;
+      }
+    }
+  }
 
 }

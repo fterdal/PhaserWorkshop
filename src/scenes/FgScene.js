@@ -9,6 +9,7 @@ export default class FgScene extends Phaser.Scene {
   constructor() {
     super('FgScene');
     this.collectGun = this.collectGun.bind(this);
+    this.fireLaser = this.fireLaser.bind(this);
   }
 
   preload() {
@@ -20,12 +21,21 @@ export default class FgScene extends Phaser.Scene {
     });
     this.load.image('brandon', 'assets/sprites/brandon.png');
     this.load.image('gun', 'assets/sprites/gun.png');
-    this.load.image('laser', 'assets/sprites/laserBolt.png');
+    this.load.image('laserBolt', 'assets/sprites/laserBolt.png');
   }
 
   create() {
     // Create the ground and lasers
     this.createGroups();
+    // We're going to create a group for our lasers
+    this.lasers = this.physics.add.group({
+      classType: Laser,
+      runChildUpdate: true,
+      allowGravity: false   // Important! When an obj is added to a group, it will inherit
+      // the group's attributes. So if this group's gravity is enabled,
+      // the individual lasers will also have gravity enabled when they're
+      // added to this group
+    });
 
     // Josh. The player. Our sprite is a little large, so we'll scale it down
     this.player = new Player(this, 20, 400, 'josh').setScale(0.25);
@@ -37,6 +47,7 @@ export default class FgScene extends Phaser.Scene {
       this.gun,
     ], this.groundGroup);
     this.physics.add.collider(this.enemy, this.player);
+    this.physics.add.collider(this.lasers, this.enemy);
 
     // When the player collides with the gun
     this.physics.add.overlap(
@@ -67,6 +78,34 @@ export default class FgScene extends Phaser.Scene {
   // delta: time elapsed (ms) since last update() call. 16.666 ms @ 60fps
   update(time, delta) {
     this.player.update(this.cursors);
+    this.gun.update(
+      time,
+      this.player,
+      this.cursors,
+      this.fireLaser  // Callback fn for creating lasers
+    );
+  }
+
+  // Callback fn. We implement it here b/c our scene has references to the lasers group and the player
+  fireLaser(x, y, left) {
+    // These are the offsets from the player's position that make it look like
+    // the laser starts from the gun in the player's hand
+    const offsetX = 56;
+    const offsetY = 14;
+    const laserX =
+      this.player.x + (this.player.facingLeft ? -offsetX : offsetX);
+    const laserY = this.player.y + offsetY;
+
+    // Create a laser bullet and scale the sprite down
+    const laser = new Laser(
+      this,
+      laserX,
+      laserY,
+      'laserBolt',
+      this.player.facingLeft
+    ).setScale(0.25);
+    // Add our newly created to the group
+    this.lasers.add(laser);
   }
 
   // Make the ground
