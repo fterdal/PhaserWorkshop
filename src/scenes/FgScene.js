@@ -10,6 +10,7 @@ export default class FgScene extends Phaser.Scene {
     super('FgScene');
     this.collectGun = this.collectGun.bind(this);
     this.fireLaser = this.fireLaser.bind(this);
+    this.hit = this.hit.bind(this);
   }
 
   preload() {
@@ -51,11 +52,9 @@ export default class FgScene extends Phaser.Scene {
     this.physics.add.overlap(
       this.lasers,
       this.enemy,
-      () => { console.log('ENEMY WAS HIT!') },    // Our callback function that will handle the collision logic
-      null,               // processCallback. Can specify a function that has custom collision
-      // conditions. We won't be using this so you can ignore it.
-      this                // The context of 'this' for our callback. Since we're binding
-      // our callback, it doesn't really matter.
+      this.hit,
+      null,
+      this
     );
 
     // When the player collides with the gun
@@ -81,6 +80,11 @@ export default class FgScene extends Phaser.Scene {
     // << ADD GAME LOGIC HERE >>
     this.player.armed = true;
     this.gun.disableBody(true, true);
+  }
+
+  hit(enemy, laser) {
+    laser.setActive(false);
+    laser.setVisible(false);
   }
 
   // time: total time elapsed (ms)
