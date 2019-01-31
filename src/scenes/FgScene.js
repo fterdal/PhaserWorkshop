@@ -2,11 +2,13 @@
 import Player from '../entity/Player';
 import Enemy from '../entity/Enemy';
 import Gun from '../entity/Gun';
+import Laser from '../entity/Laser';
 import Ground from '../entity/Ground';
 
 export default class FgScene extends Phaser.Scene {
   constructor() {
     super('FgScene');
+    this.collectGun = this.collectGun.bind(this);
   }
 
   preload() {
@@ -18,6 +20,7 @@ export default class FgScene extends Phaser.Scene {
     });
     this.load.image('brandon', 'assets/sprites/brandon.png');
     this.load.image('gun', 'assets/sprites/gun.png');
+    this.load.image('laser', 'assets/sprites/laserBolt.png');
   }
 
   create() {
@@ -33,16 +36,31 @@ export default class FgScene extends Phaser.Scene {
       this.enemy,
       this.gun,
     ], this.groundGroup);
-    this.physics.add.collider([
-      this.enemy,
+    this.physics.add.collider(this.enemy, this.player);
+
+    // When the player collides with the gun
+    this.physics.add.overlap(
+      this.player,
       this.gun,
-    ], this.player);
+      this.collectGun,    // Our callback function that will handle the collision logic
+      null,               // processCallback. Can specify a function that has custom collision
+      // conditions. We won't be using this so you can ignore it.
+      this                // The context of 'this' for our callback. Since we're binding
+      // our callback, it doesn't really matter.
+    );
 
     // Assign the cursors
     this.cursors = this.input.keyboard.createCursorKeys();
 
     // Create player's animations
     this.createAnimations();
+
+  }
+
+  collectGun(player, gun) {
+    // << ADD GAME LOGIC HERE >>
+    this.player.armed = true;
+    this.gun.disableBody(true, true);
   }
 
   // time: total time elapsed (ms)

@@ -10,6 +10,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.add.existing(this);
     this.scene.physics.world.enable(this);
     this.facingLeft = false;
+    this.armed = false;
   }
 
   // Check which controller button is being pushed and execute movement & animation
@@ -47,31 +48,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // Neutral (no movement)
     else {
       this.setVelocityX(0);
-      this.play('idleUnarmed');
+      if (this.armed) {
+        this.play('idleArmed');
+      } else {
+        this.play('idleUnarmed');
+      }
     }
   }
-
-  // updateMovement(cursors) {
-  //   // Move left
-  //   if (cursors.left.isDown) {
-  //     this.setVelocityX(-360);
-  //     if (this.body.touching.down) {
-  //       this.play('run', true);
-  //     }
-  //   }
-  //   // Move right
-  //   else if (cursors.right.isDown) {
-  //     this.setVelocityX(360);
-  //     if (this.body.touching.down) {
-  //       this.play('run', true);
-  //     }
-  //   }
-  //   // Neutral (no movement)
-  //   else {
-  //     this.setVelocityX(0);
-  //   }
-  // }
-
 
   updateJump(cursors) {
     if (cursors.up.isDown && this.body.touching.down) {
