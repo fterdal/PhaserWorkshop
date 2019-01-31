@@ -25,20 +25,18 @@ export default class FgScene extends Phaser.Scene {
   }
 
   create() {
-    // Create the ground and lasers
+    // Create the ground
     this.createGroups();
     // We're going to create a group for our lasers
     this.lasers = this.physics.add.group({
       classType: Laser,
+      maxSize: 40,
       runChildUpdate: true,
-      allowGravity: false   // Important! When an obj is added to a group, it will inherit
-      // the group's attributes. So if this group's gravity is enabled,
-      // the individual lasers will also have gravity enabled when they're
-      // added to this group
+      allowGravity: false
     });
 
     // Josh. The player. Our sprite is a little large, so we'll scale it down
-    this.player = new Player(this, 20, 400, 'josh').setScale(0.25);
+    this.player = new Player(this, 60, 400, 'josh').setScale(0.25);
     this.enemy = new Enemy(this, 600, 400, 'brandon').setScale(0.25);
     this.gun = new Gun(this, 200, 400, 'gun').setScale(0.25);
     this.physics.add.collider([
@@ -46,8 +44,19 @@ export default class FgScene extends Phaser.Scene {
       this.enemy,
       this.gun,
     ], this.groundGroup);
+    // this.physics.add.collider(this.lasers, this.enemy);
     this.physics.add.collider(this.enemy, this.player);
-    this.physics.add.collider(this.lasers, this.enemy);
+
+    // When the laser collides with the enemy
+    this.physics.add.overlap(
+      this.lasers,
+      this.enemy,
+      () => { console.log('ENEMY WAS HIT!') },    // Our callback function that will handle the collision logic
+      null,               // processCallback. Can specify a function that has custom collision
+      // conditions. We won't be using this so you can ignore it.
+      this                // The context of 'this' for our callback. Since we're binding
+      // our callback, it doesn't really matter.
+    );
 
     // When the player collides with the gun
     this.physics.add.overlap(
@@ -96,16 +105,22 @@ export default class FgScene extends Phaser.Scene {
       this.player.x + (this.player.facingLeft ? -offsetX : offsetX);
     const laserY = this.player.y + offsetY;
 
-    // Create a laser bullet and scale the sprite down
-    const laser = new Laser(
-      this,
-      laserX,
-      laserY,
-      'laserBolt',
-      this.player.facingLeft
-    ).setScale(0.25);
-    // Add our newly created to the group
-    this.lasers.add(laser);
+    // Get the first available laser object that has been set to inactive
+    let laser = this.lasers.getFirstDead();
+    // Check if we can reuse an inactive laser in our pool of lasers
+    if (!laser) {
+      // Create a laser bullet and scale the sprite down
+      laser = new Laser(
+        this,
+        laserX,
+        laserY,
+        'laserBolt',
+        this.player.facingLeft
+      ).setScale(0.25);
+      this.lasers.add(laser);
+    }
+    // Reset this laser to be used for the shot
+    laser.reset(laserX, laserY, this.player.facingLeft);
   }
 
   // Make the ground
@@ -120,6 +135,7 @@ export default class FgScene extends Phaser.Scene {
     this.createGround(160, 540);
     this.createGround(600, 540);
   }
+
   createAnimations() {
     this.anims.create({
       key: 'run',

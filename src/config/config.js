@@ -9,7 +9,7 @@ export default {
     default: 'arcade',  // A simple and performant physics engine
     arcade: {
       gravity: { y: 1500 },  // Game objects will by default be affected by gravity
-      debug: false,
+      debug: true,
     },
   },
   // This option is to turn off the default behavior of images being automatically sharpened.
