@@ -26,6 +26,7 @@ export default class FgScene extends Phaser.Scene {
 
     // Sounds
     this.load.audio('jump', 'assets/audio/jump.wav');
+    this.load.audio('laser', 'assets/audio/laser.wav');
   }
 
   create() {
@@ -76,6 +77,7 @@ export default class FgScene extends Phaser.Scene {
 
     // Create sounds
     this.jumpSound = this.sound.add('jump');
+    this.laserSound = this.sound.add('laser');
 
     // Create player's animations
     this.createAnimations();
@@ -101,7 +103,8 @@ export default class FgScene extends Phaser.Scene {
       time,
       this.player,
       this.cursors,
-      this.fireLaser  // Callback fn for creating lasers
+      this.fireLaser,  // Callback fn for creating lasers
+      this.laserSound,
     );
   }
 
@@ -116,7 +119,7 @@ export default class FgScene extends Phaser.Scene {
     const laserY = this.player.y + offsetY;
 
     // Get the first available laser object that has been set to inactive
-    let laser = this.lasers.getFirstDead();
+    let laser = this.lasers.getFirstDead()
     // Check if we can reuse an inactive laser in our pool of lasers
     if (!laser) {
       // Create a laser bullet and scale the sprite down
