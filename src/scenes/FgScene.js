@@ -27,6 +27,7 @@ export default class FgScene extends Phaser.Scene {
     // Sounds
     this.load.audio('jump', 'assets/audio/jump.wav');
     this.load.audio('laser', 'assets/audio/laser.wav');
+    this.load.audio('scream', 'assets/audio/scream.wav');
   }
 
   create() {
@@ -78,6 +79,7 @@ export default class FgScene extends Phaser.Scene {
     // Create sounds
     this.jumpSound = this.sound.add('jump');
     this.laserSound = this.sound.add('laser');
+    this.screamSound = this.sound.add('scream');
 
     // Create player's animations
     this.createAnimations();
@@ -106,6 +108,7 @@ export default class FgScene extends Phaser.Scene {
       this.fireLaser,  // Callback fn for creating lasers
       this.laserSound,
     );
+    this.enemy.update(this.screamSound);
   }
 
   // Callback fn. We implement it here b/c our scene has references to the lasers group and the player
